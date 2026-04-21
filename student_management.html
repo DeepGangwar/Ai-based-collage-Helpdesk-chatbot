@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AI College Chatbot Pro</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #0f172a;
+      color: white;
+      text-align: center;
+    }
+
+    .chatbox {
+      width: 380px;
+      margin: auto;
+      background: #1e293b;
+      padding: 10px;
+      border-radius: 10px;
+    }
+
+    #messages {
+      height: 280px;
+      overflow-y: auto;
+      background: #0f172a;
+      padding: 10px;
+      border-radius: 5px;
+      text-align: left;
+    }
+
+    input {
+      width: 60%;
+      padding: 8px;
+      border-radius: 5px;
+      border: none;
+    }
+
+    button {
+      padding: 8px;
+      margin: 3px;
+      border-radius: 5px;
+      border: none;
+      background: #22c55e;
+      color: white;
+      cursor: pointer;
+    }
+
+    .user { color: lightblue; }
+    .bot { color: lightgreen; }
+    .quick button {
+      background: #334155;
+    }
+  </style>
+</head>
+
+<body>
+
+<h2>🎓 AI College Chatbot </h2>
+
+<div class="chatbox">
+  <div id="messages"></div>
+
+  <div class="quick">
+    <button onclick="quick('fee')">Fees</button>
+    <button onclick="quick('course')">Courses</button>
+    <button onclick="quick('placement')">Placement</button>
+    <button onclick="quick('contact')">Contact</button>
+  </div>
+
+  <input type="text" id="input" placeholder="Ask something..." onkeypress="enterKey(event)">
+  <button onclick="send()">Send</button>
+  <button onclick="voiceInput()">🎤</button>
+</div>
+
+<script>
+function addUser(text){
+  messages.innerHTML += `<div class="user">You: ${text}</div>`;
+}
+
+function addBot(text){
+  messages.innerHTML += `<div class="bot">Bot: ${text}</div>`;
+  speak(text);
+  messages.scrollTop = messages.scrollHeight;
+}
+
+function send(){
+  let input = document.getElementById("input").value.toLowerCase();
+  if(!input) return;
+
+  addUser(input);
+  respond(input);
+  document.getElementById("input").value="";
+}
+
+function quick(text){
+  addUser(text);
+  respond(text);
+}
+
+function respond(input){
+  let reply = "Sorry, I didn't understand.";
+
+  if (input.includes("fee")) {
+    reply = "B.Tech fee is around ₹1,00,000 per year and Diploma fee is around ₹35,000.";
+  } 
+  else if (input.includes("course")) {
+    reply = "Courses include B.Tech, BCA, MCA, MBA, BBA, Law, Pharmacy, Agriculture.";
+  } 
+  else if (input.includes("placement")) {
+    reply = "Top recruiters include TCS, HCL, Deloitte, Wipro.";
+  } 
+  else if (input.includes("contact")) {
+    reply = "Contact: +91-0581-2460442.";
+  } 
+  else if (input.includes("location")) {
+    reply = "Located at NH-24, Bareilly, Uttar Pradesh.";
+  }
+
+  setTimeout(()=>addBot(reply),500);
+}
+
+// Voice Output
+function speak(text){
+  let speech = new SpeechSynthesisUtterance(text);
+  speech.lang = "en-US";
+  window.speechSynthesis.speak(speech);
+}
+
+// Voice Input
+function voiceInput(){
+  let recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+  recognition.start();
+
+  recognition.onresult = function(event){
+    let text = event.results[0][0].transcript;
+    document.getElementById("input").value = text;
+    send();
+  }
+}
+
+function enterKey(e){
+  if(e.key === "Enter") send();
+}
+
+// Welcome message
+window.onload = ()=>{
+  addBot("Welcome to Invertis University Chatbot! How can I help you?");
+}
+</script>
+
+</body>
+</html>
